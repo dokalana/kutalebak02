@@ -1,22 +1,348 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Websiteku</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: 60px auto;
-      padding: 0 20px;
-      line-height: 1.6;
-    }
-    h1 { color: #2563eb; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dokumentasi Kampung Kami</title>
+<meta name="description" content="Arsip foto dan dokumentasi kegiatan Kampung Kami.">
+<style>
+  :root {
+    --hijau: #2f6b3f;
+    --hijau-tua: #1f4a2b;
+    --krem: #faf6ee;
+    --tanah: #b5703a;
+    --teks: #2a2a26;
+    --abu: #6b6b63;
+    --garis: #e3dccc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    background: var(--krem);
+    color: var(--teks);
+    line-height: 1.65;
+  }
+  a { color: inherit; }
+  .wadah { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  /* Navigasi */
+  header.nav {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(250,246,238,.94);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--garis);
+  }
+  .nav .wadah { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-weight: bold; color: var(--hijau-tua); text-decoration: none; font-size: 1.1rem; }
+  .nav nav a {
+    font-family: Arial, sans-serif; font-size: .9rem; text-decoration: none;
+    margin-left: 20px; color: var(--abu);
+  }
+  .nav nav a:hover { color: var(--hijau); }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(160deg, var(--hijau-tua), var(--hijau) 70%, #4d8a54);
+    color: #fff; padding: 90px 0 80px; text-align: center;
+  }
+  .hero small {
+    font-family: Arial, sans-serif; letter-spacing: .2em; text-transform: uppercase;
+    font-size: .78rem; opacity: .8;
+  }
+  .hero h1 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 12px 0 14px; line-height: 1.15; }
+  .hero p { max-width: 560px; margin: 0 auto 28px; opacity: .92; }
+  .tombol {
+    display: inline-block; background: var(--tanah); color: #fff; text-decoration: none;
+    font-family: Arial, sans-serif; padding: 12px 26px; border-radius: 6px; font-size: .95rem;
+  }
+  .tombol:hover { background: #9c5e2e; }
+
+  /* Seksi */
+  section { padding: 64px 0; }
+  h2 { font-size: 1.8rem; color: var(--hijau-tua); margin-bottom: 8px; }
+  .sub { color: var(--abu); margin-bottom: 28px; }
+
+  .tentang p { max-width: 720px; margin-bottom: 14px; }
+  .statistik { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+  .stat {
+    background: #fff; border: 1px solid var(--garis); border-radius: 8px;
+    padding: 16px 22px; min-width: 140px;
+  }
+  .stat b { display: block; font-size: 1.6rem; color: var(--hijau); }
+  .stat span { font-family: Arial, sans-serif; font-size: .82rem; color: var(--abu); }
+
+  /* Filter */
+  .filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+  .filter button {
+    font-family: Arial, sans-serif; font-size: .88rem; cursor: pointer;
+    background: #fff; border: 1px solid var(--garis); color: var(--teks);
+    padding: 8px 16px; border-radius: 999px;
+  }
+  .filter button:hover { border-color: var(--hijau); }
+  .filter button.aktif { background: var(--hijau); border-color: var(--hijau); color: #fff; }
+
+  /* Galeri */
+  .galeri { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .kartu {
+    background: #fff; border: 1px solid var(--garis); border-radius: 10px;
+    overflow: hidden; cursor: pointer; transition: transform .15s, box-shadow .15s;
+  }
+  .kartu:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+  .foto {
+    aspect-ratio: 4/3; background: linear-gradient(135deg, #cfe0c9, #e9dcc3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: Arial, sans-serif; font-size: .85rem; color: var(--abu);
+    overflow: hidden;
+  }
+  .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .info { padding: 14px 16px 16px; }
+  .info .kat {
+    font-family: Arial, sans-serif; font-size: .72rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--tanah);
+  }
+  .info h3 { font-size: 1.05rem; margin: 4px 0 4px; }
+  .info .tgl { font-family: Arial, sans-serif; font-size: .8rem; color: var(--abu); }
+  .kosong { color: var(--abu); font-style: italic; display: none; }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed; inset: 0; background: rgba(15,20,15,.92); z-index: 50;
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .lightbox.buka { display: flex; }
+  .lb-isi { max-width: 860px; width: 100%; text-align: center; color: #fff; }
+  .lb-foto {
+    background: linear-gradient(135deg, #cfe0c9, #e9dcc3); border-radius: 8px;
+    min-height: 240px; display: flex; align-items: center; justify-content: center;
+    color: var(--abu); font-family: Arial, sans-serif; overflow: hidden;
+  }
+  .lb-foto img { max-width: 100%; max-height: 68vh; display: block; }
+  .lb-isi h3 { margin-top: 14px; font-size: 1.2rem; }
+  .lb-isi p { font-size: .95rem; opacity: .85; margin-top: 4px; }
+  .lb-tutup {
+    position: absolute; top: 14px; right: 18px; background: none; border: 0;
+    color: #fff; font-size: 2.2rem; cursor: pointer; line-height: 1;
+  }
+
+  /* Kontak & footer */
+  .kontak { background: #fff; border-top: 1px solid var(--garis); border-bottom: 1px solid var(--garis); }
+  .kontak p { max-width: 620px; }
+  footer {
+    text-align: center; padding: 28px 20px; font-family: Arial, sans-serif;
+    font-size: .85rem; color: var(--abu);
+  }
+
+  @media (max-width: 560px) {
+    .nav nav a { margin-left: 12px; font-size: .82rem; }
+    .hero { padding: 64px 0 56px; }
+    section { padding: 48px 0; }
+  }
+</style>
 </head>
 <body>
-  <h1>Halo, ini websiteku!</h1>
-  <p>Selamat datang. Aku sedang belajar membuat website.</p>
+
+<header class="nav">
+  <div class="wadah">
+    <a class="logo" href="#atas">Kampung Kami</a>
+    <nav>
+      <a href="#tentang">Tentang</a>
+      <a href="#dokumentasi">Dokumentasi</a>
+      <a href="#kontak">Kontak</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="atas">
+  <div class="wadah">
+    <small>Arsip Dokumentasi</small>
+    <h1>Kampung Kami</h1>
+    <p>Kumpulan foto dan catatan kegiatan, tempat, dan kenangan warga, disimpan agar bisa dilihat siapa saja.</p>
+    <a class="tombol" href="#dokumentasi">Lihat Dokumentasi</a>
+  </div>
+</div>
+
+<section class="tentang" id="tentang">
+  <div class="wadah">
+    <h2>Tentang Kampung</h2>
+    <p class="sub">Sekilas tentang tempat kami.</p>
+    <p>Tulis di sini cerita singkat kampungmu: letaknya, sejarahnya, dan hal yang membuatnya istimewa. Dua atau tiga paragraf sudah cukup.</p>
+    <p>Website ini dibuat khusus untuk mendokumentasikan kegiatan dan peristiwa di kampung, seperti gotong royong, acara adat, pembangunan, dan keindahan alam sekitar.</p>
+    <div class="statistik">
+      <div class="stat"><b id="jmlFoto">0</b><span>Dokumentasi</span></div>
+      <div class="stat"><b id="jmlKategori">0</b><span>Kategori</span></div>
+      <div class="stat"><b>2026</b><span>Arsip dimulai</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="dokumentasi">
+  <div class="wadah">
+    <h2>Dokumentasi</h2>
+    <p class="sub">Klik foto untuk melihat lebih besar.</p>
+    <div class="filter" id="filter"></div>
+    <div class="galeri" id="galeri"></div>
+    <p class="kosong" id="kosong">Belum ada dokumentasi di kategori ini.</p>
+  </div>
+</section>
+
+<section class="kontak" id="kontak">
+  <div class="wadah">
+    <h2>Kontak</h2>
+    <p class="sub">Punya foto atau cerita untuk ditambahkan?</p>
+    <p>Hubungi pengelola dokumentasi kampung melalui: <br>
+    <b>Nama pengelola</b> · WhatsApp 08xx-xxxx-xxxx · email@contoh.com</p>
+  </div>
+</section>
+
+<footer>
+  &copy; <span id="tahun"></span> Dokumentasi Kampung Kami
+</footer>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lb-tutup" id="lbTutup" aria-label="Tutup">&times;</button>
+  <div class="lb-isi">
+    <div class="lb-foto" id="lbFoto"></div>
+    <h3 id="lbJudul"></h3>
+    <p id="lbKet"></p>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DAFTAR DOKUMENTASI
+   Untuk menambah dokumentasi baru, salin salah satu blok { ... }
+   di bawah, lalu ubah isinya. Taruh file fotonya di folder "foto".
+   - foto     : nama file, contoh "foto/gotong-royong.jpg"
+   - judul    : judul dokumentasi
+   - tanggal  : tulis bebas, contoh "17 Agustus 2026"
+   - kategori : bebas, filter dibuat otomatis dari sini
+   - ket      : keterangan singkat
+   ============================================================ */
+const dokumentasi = [
+  {
+    foto: "foto/gotong-royong.jpg",
+    judul: "Gotong Royong Bersih Desa",
+    tanggal: "5 Oktober 2026",
+    kategori: "Kegiatan",
+    ket: "Warga bersama-sama membersihkan jalan dan saluran air kampung."
+  },
+  {
+    foto: "foto/hut-ri.jpg",
+    judul: "Perayaan 17 Agustus",
+    tanggal: "17 Agustus 2026",
+    kategori: "Kegiatan",
+    ket: "Lomba dan upacara memperingati hari kemerdekaan di lapangan kampung."
+  },
+  {
+    foto: "foto/pembangunan-jalan.jpg",
+    judul: "Pembangunan Jalan Utama",
+    tanggal: "Juli 2026",
+    kategori: "Pembangunan",
+    ket: "Proses pengecoran jalan penghubung antar dusun."
+  },
+  {
+    foto: "foto/sawah.jpg",
+    judul: "Hamparan Sawah",
+    tanggal: "September 2026",
+    kategori: "Alam",
+    ket: "Pemandangan sawah di pagi hari."
+  },
+  {
+    foto: "foto/sungai.jpg",
+    judul: "Sungai Kampung",
+    tanggal: "Agustus 2026",
+    kategori: "Alam",
+    ket: "Aliran sungai yang menjadi sumber air warga."
+  },
+  {
+    foto: "foto/acara-adat.jpg",
+    judul: "Acara Adat Syukuran Panen",
+    tanggal: "Juni 2026",
+    kategori: "Budaya",
+    ket: "Tradisi syukuran hasil panen bersama seluruh warga."
+  }
+];
+
+const galeri = document.getElementById("galeri");
+const filterEl = document.getElementById("filter");
+const kosong = document.getElementById("kosong");
+const lightbox = document.getElementById("lightbox");
+const lbFoto = document.getElementById("lbFoto");
+const lbJudul = document.getElementById("lbJudul");
+const lbKet = document.getElementById("lbKet");
+
+function buatGambar(item) {
+  const img = new Image();
+  img.src = item.foto;
+  img.alt = item.judul;
+  img.loading = "lazy";
+  img.onerror = function () {
+    const p = document.createElement("span");
+    p.textContent = "Foto: " + item.judul;
+    img.replaceWith(p);
+  };
+  return img;
+}
+
+function tampilkan(kategori) {
+  galeri.innerHTML = "";
+  const daftar = dokumentasi.filter(d => kategori === "Semua" || d.kategori === kategori);
+  kosong.style.display = daftar.length ? "none" : "block";
+  daftar.forEach(item => {
+    const kartu = document.createElement("div");
+    kartu.className = "kartu";
+    const foto = document.createElement("div");
+    foto.className = "foto";
+    foto.appendChild(buatGambar(item));
+    const info = document.createElement("div");
+    info.className = "info";
+    info.innerHTML = '<div class="kat"></div><h3></h3><div class="tgl"></div>';
+    info.querySelector(".kat").textContent = item.kategori;
+    info.querySelector("h3").textContent = item.judul;
+    info.querySelector(".tgl").textContent = item.tanggal;
+    kartu.append(foto, info);
+    kartu.addEventListener("click", () => bukaLightbox(item));
+    galeri.appendChild(kartu);
+  });
+}
+
+function buatFilter() {
+  const kategori = ["Semua", ...new Set(dokumentasi.map(d => d.kategori))];
+  kategori.forEach((k, i) => {
+    const b = document.createElement("button");
+    b.textContent = k;
+    if (i === 0) b.classList.add("aktif");
+    b.addEventListener("click", () => {
+      filterEl.querySelectorAll("button").forEach(x => x.classList.remove("aktif"));
+      b.classList.add("aktif");
+      tampilkan(k);
+    });
+    filterEl.appendChild(b);
+  });
+  document.getElementById("jmlKategori").textContent = kategori.length - 1;
+}
+
+function bukaLightbox(item) {
+  lbFoto.innerHTML = "";
+  lbFoto.appendChild(buatGambar(item));
+  lbJudul.textContent = item.judul;
+  lbKet.textContent = item.tanggal + " · " + item.ket;
+  lightbox.classList.add("buka");
+  lightbox.setAttribute("aria-hidden", "false");
+}
+function tutupLightbox() {
+  lightbox.classList.remove("buka");
+  lightbox.setAttribute("aria-hidden", "true");
+}
+document.getElementById("lbTutup").addEventListener("click", tutupLightbox);
+lightbox.addEventListener("click", e => { if (e.target === lightbox) tutupLightbox(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") tutupLightbox(); });
+
+document.getElementById("jmlFoto").textContent = dokumentasi.length;
+document.getElementById("tahun").textContent = new Date().getFullYear();
+buatFilter();
+tampilkan("Semua");
+</script>
 </body>
 </html>
